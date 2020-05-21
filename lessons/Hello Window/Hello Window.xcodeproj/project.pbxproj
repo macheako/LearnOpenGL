@@ -7,10 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DE2AF1DD2476E96C006A2F40 /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = DE2AF1DC2476E96C006A2F40 /* glad.c */; };
+		DE2AF1E02476ED3F006A2F40 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE2AF1DF2476ED3F006A2F40 /* OpenGL.framework */; };
+		DE2AF1E22476ED63006A2F40 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE2AF1E12476ED63006A2F40 /* libglfw.3.3.dylib */; };
+		DE2AF1E32476ED63006A2F40 /* libglfw.3.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = DE2AF1E12476ED63006A2F40 /* libglfw.3.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DE31269A2476E54600F93FA5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE3126992476E54600F93FA5 /* main.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		DE2AF1E42476ED63006A2F40 /* Embed Libraries */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				DE2AF1E32476ED63006A2F40 /* libglfw.3.3.dylib in Embed Libraries */,
+			);
+			name = "Embed Libraries";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		DE3126942476E54600F93FA5 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -23,6 +38,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		DE2AF1DC2476E96C006A2F40 /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = glad.c; path = ../../../source/glad/3.3/glad.c; sourceTree = "<group>"; };
+		DE2AF1DF2476ED3F006A2F40 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		DE2AF1E12476ED63006A2F40 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../lib/MacOS/libglfw.3.3.dylib; sourceTree = "<group>"; };
 		DE3126962476E54600F93FA5 /* Hello Window */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "Hello Window"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DE3126992476E54600F93FA5 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -32,17 +50,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DE2AF1E22476ED63006A2F40 /* libglfw.3.3.dylib in Frameworks */,
+				DE2AF1E02476ED3F006A2F40 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DE2AF1DE2476ED3F006A2F40 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				DE2AF1E12476ED63006A2F40 /* libglfw.3.3.dylib */,
+				DE2AF1DF2476ED3F006A2F40 /* OpenGL.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		DE31268D2476E54600F93FA5 = {
 			isa = PBXGroup;
 			children = (
 				DE3126982476E54600F93FA5 /* Hello Window */,
 				DE3126972476E54600F93FA5 /* Products */,
+				DE2AF1DE2476ED3F006A2F40 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -57,6 +87,7 @@
 		DE3126982476E54600F93FA5 /* Hello Window */ = {
 			isa = PBXGroup;
 			children = (
+				DE2AF1DC2476E96C006A2F40 /* glad.c */,
 				DE3126992476E54600F93FA5 /* main.cpp */,
 			);
 			path = "Hello Window";
@@ -72,6 +103,7 @@
 				DE3126922476E54600F93FA5 /* Sources */,
 				DE3126932476E54600F93FA5 /* Frameworks */,
 				DE3126942476E54600F93FA5 /* CopyFiles */,
+				DE2AF1E42476ED63006A2F40 /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -120,6 +152,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DE31269A2476E54600F93FA5 /* main.cpp in Sources */,
+				DE2AF1DD2476E96C006A2F40 /* glad.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -239,6 +272,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/include/MacOS;
+				LIBRARY_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/lib/MacOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -247,6 +282,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/include/MacOS;
+				LIBRARY_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/lib/MacOS;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
