@@ -22,9 +22,14 @@ bool check_program_link(unsigned int program);
 /*---------------------------------*/
 char errlog[512];
 float vertices[] = {
-    -0.5f, -0.5f, 0.0f,
-     0.5f, -0.5f, 0.0f,
-     0.0f,  0.5f, 0.0f
+     0.5f,  0.5f, 0.0f,  // top right
+     0.5f, -0.5f, 0.0f,  // bottom right
+    -0.5f, -0.5f, 0.0f,  // bottom left
+    -0.5f,  0.5f, 0.0f   // top left
+};
+unsigned int indices[] = {  // note that we start from 0!
+    0, 1, 3,   // first triangle
+    1, 2, 3    // second triangle
 };
 
 // Shader Source
@@ -82,16 +87,6 @@ int main(int argc, const char * argv[])
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
             throw new std::runtime_error("[glad] Failed to initialize");
         
-        // Create & Bind New Vertex Buffer Object
-        /*---------------------------------*/
-        unsigned int VBO;
-        glGenBuffers(1, &VBO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        
-        // Populate Buffer Object
-        /*---------------------------------*/
-        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        
         // Create Vertex Shader
         /*---------------------------------*/
         unsigned int vertexShader;
@@ -123,31 +118,71 @@ int main(int argc, const char * argv[])
         unsigned int shaderProgram;
         shaderProgram = glCreateProgram();
         
-        // Link Vertex Attributes
-        /*---------------------------------*/
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-        glEnableVertexAttribArray(0);        
-        
         // Attach Shaders And Link Program
         /*---------------------------------*/
         glAttachShader(shaderProgram, vertexShader);
         glAttachShader(shaderProgram, fragmentShader);
         glLinkProgram(shaderProgram);
         
-        glUseProgram(shaderProgram);
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
+        
+        // Create & Bind New Vertex Buffer Object(s)
+        /*---------------------------------*/
+        unsigned int VBO, VAO, EBO;
+        glGenBuffers(1, &VBO);
+        glGenBuffers(1, &EBO);
+        glGenVertexArrays(1, &VAO);
+        
+        // Bind Buffer Array
+        /*---------------------------------*/
+        glBindVertexArray(VAO);
+        
+        // Bind & Set Vertex Buffer(s)
+        /*---------------------------------*/
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        
+        // Configure Vertex Attributes
+        /*---------------------------------*/
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(0);
+        
+        // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex
+        // attribute's bound vertex buffer object so afterwards we can safely unbind
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+        // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored
+        // in the VAO; keep the EBO bound.
+        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+        // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this
+        // rarely happens. Modifying other VAOs requires a call to glBindVertexArray anyways so we generally
+        // don't unbind VAOs (nor VBOs) when it's not directly necessary.
+        glBindVertexArray(0);
+        
+        // uncomment this call to draw in wireframe polygons.
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
         // Run Loop
         /*---------------------------------*/
         while (!glfwWindowShouldClose(window))
         {
-            // Input
+            // Capture Input
             processInput(window);
             
-            // Render
+            // Clear Screen
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+            
+            // Draw Buffer Objects
+            glUseProgram(shaderProgram);
+            glBindVertexArray(VAO);
+            //  glDrawArrays(GL_TRIANGLES, 0, 3);
+            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
             
             // glfw: swap buffers and poll IO events
             // (keys pressed/released, mouse moved etc.)
@@ -155,10 +190,14 @@ int main(int argc, const char * argv[])
             glfwSwapBuffers(window);
             glfwPollEvents();
         }
+        
+        glDeleteVertexArrays(1, &VAO);
+        glDeleteBuffers(1, &VBO);
+        glDeleteProgram(shaderProgram);
     }
     catch (std::exception e)
     {
-        std::cerr << e.what() << std::endl;
+        std::cerr << "Exception Thrown! " << e.what() << std::endl;
     }
     
     // Terminate GLFW
