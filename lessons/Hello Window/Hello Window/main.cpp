@@ -1,15 +1,13 @@
 //
 //  main.cpp
-//  TestApp
 //
 //  Created by Crunchy on 5/20/20.
 //  Copyright © 2020 Crunchy. All rights reserved.
 //
 
+#include <iostream>
 #include <glad/3.3/glad.h>
 #include <GLFW/glfw3.h>
-
-#include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
