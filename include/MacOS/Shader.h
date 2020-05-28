@@ -9,8 +9,6 @@
 #ifndef Shader_h
 #define Shader_h
 
-#include <glad/3.3/glad.h>
-
 #include <cstdio>
 #include <string>
 #include <fstream>
@@ -27,12 +25,19 @@ public:
     
     // Methods
     void use();
+
+    // Set Primitive
     void setBool (const std::string& name, bool value)  const;
     void setInt  (const std::string& name, int value)   const;
     void setFloat(const std::string& name, float value) const;
+
+    // Set Vector
+
+    // Set Matrix
     
 private:
     bool FileExists(const std::string& path);
+    void CheckCompileErrors(GLuint shader, const std::string& type);
 };
 
 #endif

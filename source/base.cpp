@@ -25,16 +25,37 @@ bool check_program_link(unsigned int program);
 /*---------------------------------*/
 char errlog[512];
 float vertices[] = {
-    // positions          // colors           // texture coords
-     0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // top right
-     0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // bottom right
-    -0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // bottom left
-    -0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // top left
+    // positions         // colors
+     0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,   // bottom right
+    -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,   // bottom left
+     0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f    // top
 };
 unsigned int indices[] = {  // note that we start from 0!
     0, 1, 3,   // first triangle
     1, 2, 3    // second triangle
 };
+
+// Shader Source
+/*---------------------------------*/
+const char *vertexShaderSource =
+"#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec3 aColor;\n"
+"out vec3 ourColor;\n"
+"void main()\n"
+"{\n"
+"   gl_Position = vec4(aPos, 1.0);\n"
+"   ourColor = aColor;\n"
+"}\0";
+
+const char *fragmentShaderSource =
+"#version 330 core\n"
+"out vec4 FragColor;\n"
+"in vec3 ourColor;\n"
+"void main()\n"
+"{\n"
+"   FragColor = vec4(ourColor, 1.0);\n"
+"}\0";
 
 // START APPLICATION
 /*----------------------------------------------------------------*/
@@ -75,6 +96,10 @@ int main(int argc, const char * argv[])
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
             throw new std::runtime_error("[glad] Failed to initialize");
         
+        // Create Shader Object
+        /*---------------------------------*/
+        
+        
         // Create & Bind New Vertex Buffer Object(s)
         /*---------------------------------*/
         unsigned int VBO, VAO, EBO;
@@ -86,26 +111,21 @@ int main(int argc, const char * argv[])
         /*---------------------------------*/
         glBindVertexArray(VAO);
         
-        // Set Vertex Buffer(s)
+        // Bind & Set Vertex Buffer(s)
         /*---------------------------------*/
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-                        
+        
+//        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+        
         // Configure Vertex Attributes
         /*---------------------------------*/
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
         
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
-        
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
-        glEnableVertexAttribArray(2);  
-        
-        // Set Element Buffer(s)
-        /*---------------------------------*/
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
         
         // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex
         // attribute's bound vertex buffer object so afterwards we can safely unbind
@@ -121,9 +141,9 @@ int main(int argc, const char * argv[])
         glBindVertexArray(0);
         
         // uncomment this call to draw in wireframe polygons.
-//         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
-        Shader myShader("shaders/vertex/base.vert", "shaders/fragment/base.frag");
+        Shader myShader("base.vert", "base.frag");
         
         // Run Loop
         /*---------------------------------*/
@@ -139,8 +159,7 @@ int main(int argc, const char * argv[])
             myShader.use();
             
             glBindVertexArray(VAO);
-//            glDrawArrays(GL_TRIANGLES, 0, 3);
-            glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            glDrawArrays(GL_TRIANGLES, 0, 3);
             
             // glfw: swap buffers and poll IO events
             // (keys pressed/released, mouse moved etc.)

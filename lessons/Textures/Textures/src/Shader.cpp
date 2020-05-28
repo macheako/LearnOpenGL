@@ -7,14 +7,19 @@
 //
 
 #include "Shader.h"
-#include <unistd.h>
 
 Shader::Shader(const char * vertexPath, const char * fragmentPath)
 {
     // Check file(s) exist
     if (!FileExists(vertexPath))
     {
-        std::cerr << "ERROR::SHADER::FILE_NOT_FOUND [" << vertexPath << "]" << std::endl;
+        std::cerr << "ERROR::SHADER::VERTEX::FILE_NOT_FOUND Path=" << vertexPath << std::endl;
+        return;
+    }
+    
+    if (!FileExists(fragmentPath))
+    {
+        std::cerr << "ERROR::SHADER::FRAGMENT::FILE_NOT_FOUND Path=" << fragmentPath << std::endl;
         return;
     }
     
@@ -66,27 +71,13 @@ Shader::Shader(const char * vertexPath, const char * fragmentPath)
     vertex = glCreateShader(GL_VERTEX_SHADER);
     glShaderSource(vertex, 1, &vShaderCode, NULL);
     glCompileShader(vertex);
-    
-    // Check for compilation errors
-    glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(vertex, 512, NULL, errlog);
-        std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << errlog << std::endl;
-    }
+    CheckCompileErrors(vertex, "VERTEX");
     
     // Fragment shader
     fragment = glCreateShader(GL_FRAGMENT_SHADER);
     glShaderSource(fragment, 1, &fShaderCode, NULL);
     glCompileShader(fragment);
-    
-    // Check for compilation errors
-    glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
-    if (!success)
-    {
-        glGetShaderInfoLog(fragment, 512, NULL, errlog);
-        std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << errlog << std::endl;
-    }
+    CheckCompileErrors(fragment, "FRAGMENT");
     
     // Shader program
     ID = glCreateProgram();
@@ -95,12 +86,7 @@ Shader::Shader(const char * vertexPath, const char * fragmentPath)
     glLinkProgram(ID);
     
     // Check linking errors
-    glGetProgramiv(ID, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        glGetProgramInfoLog(ID, 512, NULL, errlog);
-        std::cerr << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << errlog << std::endl;
-    }
+    CheckCompileErrors(ID, "PROGRAM");
     
     // delete the shaders as they're linked into our program now and no longer necessery
     glDeleteShader(vertex);
@@ -137,5 +123,38 @@ bool Shader::FileExists(const std::string& path)
     else
     {
         return false;
+    }
+}
+
+void Shader::CheckCompileErrors(GLuint shader, const std::string& type)
+{
+    GLint success;
+    GLchar infoLog[1024];
+
+    if (type != "PROGRAM")
+    {
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+        if (!success)
+        {
+            glGetShaderInfoLog(shader, sizeof(infoLog), NULL, infoLog);
+            std::cout 
+            << "ERROR::SHADER_COMPILATION_ERROR of type: " 
+            << type << "\n" << infoLog 
+            << "\n -- --------------------------------------------------- -- " 
+            << std::endl;
+        }
+    }
+    else
+    {
+        glGetProgramiv(shader, GL_LINK_STATUS, &success);
+        if (!success)
+        {
+            glGetProgramInfoLog(shader, sizeof(infoLog), NULL, infoLog);
+            std::cout 
+            << "ERROR::PROGRAM_LINKING_ERROR of type: " 
+            << type << "\n" << infoLog 
+            << "\n -- --------------------------------------------------- -- " 
+            << std::endl;
+        }
     }
 }
