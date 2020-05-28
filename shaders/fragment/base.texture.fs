@@ -2,9 +2,11 @@
 layout(location = 0) out vec4 Color;
 
 in vec3 Fragment;
-in vec2 Texture;
+in vec2 TexCoord;
+
+uniform sampler2D uTexture;
 
 void main()
 {
-    Color = vec4(Fragment, 1.0);
+    Color = texture(uTexture, TexCoord);
 }

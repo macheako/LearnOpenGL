@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cmath>
 
+#include "stb_image.h"
 #include "Shader.h"
 #include <glad/3.3/glad.h>
 #include <GLFW/glfw3.h>
@@ -35,6 +36,9 @@ unsigned int indices[] = {  // note that we start from 0!
     0, 1, 3,   // first triangle
     1, 2, 3    // second triangle
 };
+
+const char * VertexShaderPath   = "shaders/vertex/base.vs";
+const char * FragmentShaderPath = "shaders/fragment/blend.texture2.fs";
 
 // START APPLICATION
 /*----------------------------------------------------------------*/
@@ -75,18 +79,27 @@ int main(int argc, const char * argv[])
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
             throw new std::runtime_error("[glad] Failed to initialize");
         
-        // Create & Bind New Vertex Buffer Object(s)
+        // Create Shader(s)
+        /*---------------------------------*/
+        Shader shader(VertexShaderPath, FragmentShaderPath);
+        
+        // Create Object Buffer(s)
         /*---------------------------------*/
         unsigned int VBO, VAO, EBO;
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
         glGenVertexArrays(1, &VAO);
         
-        // Bind Buffer Array
+        // Create Texture Buffer(s)
+        /*---------------------------------*/
+        unsigned int texture;
+        glGenTextures(1, &texture);
+        
+        // Bind Vertex Array
         /*---------------------------------*/
         glBindVertexArray(VAO);
         
-        // Set Vertex Buffer(s)
+        // Set Object Buffer(s)
         /*---------------------------------*/
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -111,10 +124,6 @@ int main(int argc, const char * argv[])
         // attribute's bound vertex buffer object so afterwards we can safely unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        // remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored
-        // in the VAO; keep the EBO bound.
-        //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
         // You can unbind the VAO afterwards so other VAO calls won't accidentally modify this VAO, but this
         // rarely happens. Modifying other VAOs requires a call to glBindVertexArray anyways so we generally
         // don't unbind VAOs (nor VBOs) when it's not directly necessary.
@@ -123,7 +132,72 @@ int main(int argc, const char * argv[])
         // uncomment this call to draw in wireframe polygons.
 //         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         
-        Shader myShader("shaders/vertex/base.vert", "shaders/fragment/base.frag");
+        // Generate Texture Object(s)
+        /*---------------------------------*/
+        unsigned int texture1, texture2;
+        glGenTextures(1, &texture1);
+        
+        // Bind Texture 1
+        /*---------------------------------*/
+        glBindTexture(GL_TEXTURE_2D, texture1);
+        
+        // Configure Texture Parameters
+        /*---------------------------------*/
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        
+        // Load Texture 1
+        /*---------------------------------*/
+        int width, height, nrChannels;
+        std::string imagePath = "images/wood.jpg";
+        stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
+        unsigned char *data = stbi_load(imagePath.c_str(), &width, &height, &nrChannels, 0);
+        if (!data)
+        {
+            throw new std::runtime_error("Failed to load image: " + imagePath);
+        }
+        else
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
+        stbi_image_free(data);
+        
+        // Create Texture 2
+        /*---------------------------------*/
+        imagePath = "images/brick.jpg";
+        glGenTextures(1, &texture2);
+        glBindTexture(GL_TEXTURE_2D, texture2);
+        
+        // Configure Texture Parameters
+        /*---------------------------------*/
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        
+        // Load Texture 2 Image
+        /*---------------------------------*/
+        data = stbi_load(imagePath.c_str(), &width, &height, &nrChannels, 0);
+        if (!data)
+        {
+            throw new std::runtime_error("Failed to load image: " + imagePath);
+        }
+        else
+        {
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }
+        stbi_image_free(data);
+        
+        // Set Texture Uniforms
+        /*---------------------------------*/
+        shader.use();
+        shader.setInt("uTexture1", 0);
+        shader.setInt("uTexture2", 1);
+        shader.setFloat("uBlend", 0.5);
         
         // Run Loop
         /*---------------------------------*/
@@ -135,11 +209,14 @@ int main(int argc, const char * argv[])
             // Clear Screen
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT);
+                                    
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, texture1);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, texture2);
             
-            myShader.use();
-            
+            shader.use();
             glBindVertexArray(VAO);
-//            glDrawArrays(GL_TRIANGLES, 0, 3);
             glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
             
             // glfw: swap buffers and poll IO events
@@ -151,6 +228,7 @@ int main(int argc, const char * argv[])
         
         glDeleteVertexArrays(1, &VAO);
         glDeleteBuffers(1, &VBO);
+        glDeleteBuffers(1, &EBO);
     }
     catch (std::exception e)
     {

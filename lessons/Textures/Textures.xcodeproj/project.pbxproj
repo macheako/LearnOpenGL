@@ -13,6 +13,7 @@
 		DE1D2788247DAFE0005085C5 /* libglfw.3.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = DE1D2786247DAFE0005085C5 /* libglfw.3.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DE1D2794247DB0AF005085C5 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE1D2793247DB0AF005085C5 /* Shader.cpp */; };
 		DE7D1F54247EF1EB00399803 /* shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = DE7D1F53247EF1CA00399803 /* shaders */; };
+		DE7D1F56248036F800399803 /* images in CopyFiles */ = {isa = PBXBuildFile; fileRef = DE7D1F552480368C00399803 /* images */; };
 		DED2D4AB247EBD7F00152F5D /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = DED2D4AA247EBD7F00152F5D /* glad.c */; };
 		DED2D4AE247EC45200152F5D /* stb_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DED2D4AD247EC45200152F5D /* stb_image.cpp */; };
 /* End PBXBuildFile section */
@@ -24,6 +25,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
+				DE7D1F56248036F800399803 /* images in CopyFiles */,
 				DE7D1F54247EF1EB00399803 /* shaders in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -49,8 +51,8 @@
 		DE1D2792247DB0A6005085C5 /* Shader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
 		DE1D2793247DB0AF005085C5 /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
 		DE7D1F53247EF1CA00399803 /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = ../../../shaders; sourceTree = "<group>"; };
+		DE7D1F552480368C00399803 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = ../../../images; sourceTree = "<group>"; };
 		DED2D4AA247EBD7F00152F5D /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glad.c; sourceTree = "<group>"; };
-		DED2D4AC247EC3FC00152F5D /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = images; sourceTree = "<group>"; };
 		DED2D4AD247EC45200152F5D /* stb_image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stb_image.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -87,8 +89,8 @@
 		DE1D277B247DAFBC005085C5 /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				DE7D1F552480368C00399803 /* images */,
 				DE7D1F53247EF1CA00399803 /* shaders */,
-				DED2D4AC247EC3FC00152F5D /* images */,
 				DE1D2791247DB093005085C5 /* include */,
 				DE1D278A247DAFE6005085C5 /* src */,
 			);
