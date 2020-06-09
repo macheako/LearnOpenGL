@@ -59,8 +59,8 @@ int main(int argc, const char * argv[])
         #ifdef __APPLE__
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
         #endif
-
-        // Create OpenGL window and context
+        
+        // OpenGL window and context
         /*---------------------------------*/
         GLFWwindow* window = glfwCreateWindow(800, 600, "OpenGL", NULL, NULL);
         if (!window)
@@ -73,7 +73,7 @@ int main(int argc, const char * argv[])
         // Register window resize callback
         /*---------------------------------*/
         glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
+        
         // Initialize glad
         /*---------------------------------*/
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))

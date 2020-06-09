@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		DE1D277D247DAFBC005085C5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE1D277C247DAFBC005085C5 /* main.cpp */; };
 		DE1D2785247DAFC6005085C5 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1D2784247DAFC6005085C5 /* OpenGL.framework */; };
-		DE1D2787247DAFE0005085C5 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DE1D2786247DAFE0005085C5 /* libglfw.3.3.dylib */; };
-		DE1D2788247DAFE0005085C5 /* libglfw.3.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = DE1D2786247DAFE0005085C5 /* libglfw.3.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DE1D2794247DB0AF005085C5 /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = DE1D2793247DB0AF005085C5 /* Shader.cpp */; };
+		DE7C5FEB248E93F7003E402D /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DEB41AEA248ACD200078537E /* libglfw.3.3.dylib */; };
+		DE7C5FEC248E93F7003E402D /* libglfw.3.3.dylib in Embed Libraries */ = {isa = PBXBuildFile; fileRef = DEB41AEA248ACD200078537E /* libglfw.3.3.dylib */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		DE7D1F54247EF1EB00399803 /* shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = DE7D1F53247EF1CA00399803 /* shaders */; };
 		DE7D1F56248036F800399803 /* images in CopyFiles */ = {isa = PBXBuildFile; fileRef = DE7D1F552480368C00399803 /* images */; };
 		DED2D4AB247EBD7F00152F5D /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = DED2D4AA247EBD7F00152F5D /* glad.c */; };
@@ -30,13 +30,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DE1D2789247DAFE0005085C5 /* Embed Libraries */ = {
+		DE7C5FED248E93F7003E402D /* Embed Libraries */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				DE1D2788247DAFE0005085C5 /* libglfw.3.3.dylib in Embed Libraries */,
+				DE7C5FEC248E93F7003E402D /* libglfw.3.3.dylib in Embed Libraries */,
 			);
 			name = "Embed Libraries";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,6 +52,7 @@
 		DE1D2793247DB0AF005085C5 /* Shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
 		DE7D1F53247EF1CA00399803 /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = ../../../shaders; sourceTree = "<group>"; };
 		DE7D1F552480368C00399803 /* images */ = {isa = PBXFileReference; lastKnownFileType = folder; name = images; path = ../../../images; sourceTree = "<group>"; };
+		DEB41AEA248ACD200078537E /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
 		DED2D4AA247EBD7F00152F5D /* glad.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glad.c; sourceTree = "<group>"; };
 		DED2D4AD247EC45200152F5D /* stb_image.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = stb_image.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -61,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DE1D2787247DAFE0005085C5 /* libglfw.3.3.dylib in Frameworks */,
+				DE7C5FEB248E93F7003E402D /* libglfw.3.3.dylib in Frameworks */,
 				DE1D2785247DAFC6005085C5 /* OpenGL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				DE1D2786247DAFE0005085C5 /* libglfw.3.3.dylib */,
+				DEB41AEA248ACD200078537E /* libglfw.3.3.dylib */,
 				DE1D2784247DAFC6005085C5 /* OpenGL.framework */,
 			);
 			name = Frameworks;
@@ -135,7 +137,7 @@
 				DE1D2775247DAFBC005085C5 /* Sources */,
 				DE1D2776247DAFBC005085C5 /* Frameworks */,
 				DE1D2777247DAFBC005085C5 /* CopyFiles */,
-				DE1D2789247DAFE0005085C5 /* Embed Libraries */,
+				DE7C5FED248E93F7003E402D /* Embed Libraries */,
 			);
 			buildRules = (
 			);
@@ -305,20 +307,26 @@
 		DE1D2781247DAFBC005085C5 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/include/MacOS;
-				LIBRARY_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/lib/MacOS;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 58LB3B6VH5;
+				HEADER_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/include;
+				LIBRARY_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
 		DE1D2782247DAFBC005085C5 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/include/MacOS;
-				LIBRARY_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/lib/MacOS;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 58LB3B6VH5;
+				HEADER_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/include;
+				LIBRARY_SEARCH_PATHS = /Users/crunchy/git/LearnOpenGL/lib;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
